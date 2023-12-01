@@ -3,10 +3,10 @@ import { Card } from "../common/Card.js";
 import { createProgressNode } from "../common/createProgressNode.js";
 import { I18n } from "../common/I18n.js";
 import {
-  clampValue,
-  flexLayout,
-  getCardColors,
-  lowercaseTrim,
+    clampValue,
+    flexLayout,
+    getCardColors,
+    lowercaseTrim,
 } from "../common/utils.js";
 import { wakatimeCardLocales } from "../translations.js";
 
@@ -30,7 +30,7 @@ const languageColors = require("../common/languageColors.json"); // now works
  * @returns {string} No coding activity SVG node string.
  */
 const noCodingActivityNode = ({ color, text }) => {
-  return `
+    return `
     <text x="25" y="11" class="stat bold" fill="${color}">${text}</text>
   `;
 };
@@ -50,13 +50,13 @@ const noCodingActivityNode = ({ color, text }) => {
  * @returns {string} The compact layout language SVG node.
  */
 const createCompactLangNode = ({ lang, x, y, display_format }) => {
-  const color = languageColors[lang.name] || "#858585";
-  const value =
-    display_format === "percent"
-      ? `${lang.percent.toFixed(2).toString()} %`
-      : lang.text;
+    const color = languageColors[lang.name] || "#858585";
+    const value =
+        display_format === "percent" ?
+            `${lang.percent.toFixed(2).toString()} %`
+        :   lang.text;
 
-  return `
+    return `
     <g transform="translate(${x}, ${y})">
       <circle cx="5" cy="6" r="5" fill="${color}" />
       <text data-testid="lang-name" x="15" y="10" class='lang-name'>
@@ -76,22 +76,22 @@ const createCompactLangNode = ({ lang, x, y, display_format }) => {
  * @returns {string[]} The language text node items.
  */
 const createLanguageTextNode = ({ langs, y, display_format }) => {
-  return langs.map((lang, index) => {
-    if (index % 2 === 0) {
-      return createCompactLangNode({
-        lang,
-        x: 25,
-        y: 12.5 * index + y,
-        display_format,
-      });
-    }
-    return createCompactLangNode({
-      lang,
-      x: 230,
-      y: 12.5 + 12.5 * index,
-      display_format,
+    return langs.map((lang, index) => {
+        if (index % 2 === 0) {
+            return createCompactLangNode({
+                lang,
+                x: 25,
+                y: 12.5 * index + y,
+                display_format,
+            });
+        }
+        return createCompactLangNode({
+            lang,
+            x: 230,
+            y: 12.5 + 12.5 * index,
+            display_format,
+        });
     });
-  });
 };
 
 /**
@@ -109,32 +109,33 @@ const createLanguageTextNode = ({ langs, y, display_format }) => {
  * @returns {string} The text SVG node.
  */
 const createTextNode = ({
-  id,
-  label,
-  value,
-  index,
-  percent,
-  hideProgress,
-  progressBarColor,
-  progressBarBackgroundColor,
+    id,
+    label,
+    value,
+    index,
+    percent,
+    hideProgress,
+    progressBarColor,
+    progressBarBackgroundColor,
 }) => {
-  const staggerDelay = (index + 3) * 150;
+    const staggerDelay = (index + 3) * 150;
 
-  const cardProgress = hideProgress
-    ? null
-    : createProgressNode({
-        x: 110,
-        y: 4,
-        progress: percent,
-        color: progressBarColor,
-        width: 220,
-        // @ts-ignore
-        name: label,
-        progressBarBackgroundColor,
-        delay: staggerDelay + 300,
-      });
+    const cardProgress =
+        hideProgress ? null : (
+            createProgressNode({
+                x: 110,
+                y: 4,
+                progress: percent,
+                color: progressBarColor,
+                width: 220,
+                // @ts-ignore
+                name: label,
+                progressBarBackgroundColor,
+                delay: staggerDelay + 300,
+            })
+        );
 
-  return `
+    return `
     <g class="stagger" style="animation-delay: ${staggerDelay}ms" transform="translate(25, 0)">
       <text class="stat bold" y="12.5" data-testid="${id}">${label}:</text>
       <text
@@ -155,14 +156,14 @@ const createTextNode = ({
  * @returns {void} The recalculated languages array.
  */
 const recalculatePercentages = (languages) => {
-  const totalSum = languages.reduce(
-    (totalSum, language) => totalSum + language.percent,
-    0,
-  );
-  const weight = +(100 / totalSum).toFixed(2);
-  languages.forEach((language) => {
-    language.percent = +(language.percent * weight).toFixed(2);
-  });
+    const totalSum = languages.reduce(
+        (totalSum, language) => totalSum + language.percent,
+        0,
+    );
+    const weight = +(100 / totalSum).toFixed(2);
+    languages.forEach((language) => {
+        language.percent = +(language.percent * weight).toFixed(2);
+    });
 };
 
 /**
@@ -174,11 +175,11 @@ const recalculatePercentages = (languages) => {
  * @returns {string} Card CSS styles.
  */
 const getStyles = ({
-  // eslint-disable-next-line no-unused-vars
-  titleColor,
-  textColor,
+    // eslint-disable-next-line no-unused-vars
+    titleColor,
+    textColor,
 }) => {
-  return `
+    return `
     .stat {
       font: 600 14px 'Segoe UI', Ubuntu, "Helvetica Neue", Sans-Serif; fill: ${textColor};
     }
@@ -208,94 +209,97 @@ const getStyles = ({
  * @returns {string} WakaTime card SVG.
  */
 const renderWakatimeCard = (stats = {}, options = { hide: [] }) => {
-  let { languages = [] } = stats;
-  const {
-    hide_title = false,
-    hide_border = false,
-    hide,
-    line_height = 25,
-    title_color,
-    icon_color,
-    text_color,
-    bg_color,
-    theme = "default",
-    hide_progress,
-    custom_title,
-    locale,
-    layout,
-    langs_count = languages.length,
-    border_radius,
-    border_color,
-    display_format = "time",
-    disable_animations,
-  } = options;
+    let { languages = [] } = stats;
+    const {
+        hide_title = false,
+        hide_border = false,
+        hide,
+        line_height = 25,
+        title_color,
+        icon_color,
+        text_color,
+        bg_color,
+        theme = "default",
+        hide_progress,
+        custom_title,
+        locale,
+        layout,
+        langs_count = languages.length,
+        border_radius,
+        border_color,
+        display_format = "time",
+        disable_animations,
+    } = options;
 
-  const shouldHideLangs = Array.isArray(hide) && hide.length > 0;
-  if (shouldHideLangs) {
-    const languagesToHide = new Set(hide.map((lang) => lowercaseTrim(lang)));
-    languages = languages.filter(
-      (lang) => !languagesToHide.has(lowercaseTrim(lang.name)),
-    );
-  }
+    const shouldHideLangs = Array.isArray(hide) && hide.length > 0;
+    if (shouldHideLangs) {
+        const languagesToHide = new Set(
+            hide.map((lang) => lowercaseTrim(lang)),
+        );
+        languages = languages.filter(
+            (lang) => !languagesToHide.has(lowercaseTrim(lang.name)),
+        );
+    }
 
-  // Since the percentages are sorted in descending order, we can just
-  // slice from the beginning without sorting.
-  languages = languages.slice(0, langs_count);
-  recalculatePercentages(languages);
+    // Since the percentages are sorted in descending order, we can just
+    // slice from the beginning without sorting.
+    languages = languages.slice(0, langs_count);
+    recalculatePercentages(languages);
 
-  const i18n = new I18n({
-    locale,
-    translations: wakatimeCardLocales,
-  });
-
-  const lheight = parseInt(String(line_height), 10);
-
-  const langsCount = clampValue(langs_count, 1, langs_count);
-
-  // returns theme based colors with proper overrides and defaults
-  const { titleColor, textColor, iconColor, bgColor, borderColor } =
-    getCardColors({
-      title_color,
-      icon_color,
-      text_color,
-      bg_color,
-      border_color,
-      theme,
+    const i18n = new I18n({
+        locale,
+        translations: wakatimeCardLocales,
     });
 
-  const filteredLanguages = languages
-    .filter((language) => language.hours || language.minutes)
-    .slice(0, langsCount);
+    const lheight = parseInt(String(line_height), 10);
 
-  // Calculate the card height depending on how many items there are
-  // but if rank circle is visible clamp the minimum height to `150`
-  let height = Math.max(45 + (filteredLanguages.length + 1) * lheight, 150);
+    const langsCount = clampValue(langs_count, 1, langs_count);
 
-  const cssStyles = getStyles({
-    titleColor,
-    textColor,
-  });
+    // returns theme based colors with proper overrides and defaults
+    const { titleColor, textColor, iconColor, bgColor, borderColor } =
+        getCardColors({
+            title_color,
+            icon_color,
+            text_color,
+            bg_color,
+            border_color,
+            theme,
+        });
 
-  let finalLayout = "";
+    const filteredLanguages = languages
+        .filter((language) => language.hours || language.minutes)
+        .slice(0, langsCount);
 
-  let width = 440;
+    // Calculate the card height depending on how many items there are
+    // but if rank circle is visible clamp the minimum height to `150`
+    let height = Math.max(45 + (filteredLanguages.length + 1) * lheight, 150);
 
-  // RENDER COMPACT LAYOUT
-  if (layout === "compact") {
-    width = width + 50;
-    height = 90 + Math.round(filteredLanguages.length / 2) * 25;
+    const cssStyles = getStyles({
+        titleColor,
+        textColor,
+    });
 
-    // progressOffset holds the previous language's width and used to offset the next language
-    // so that we can stack them one after another, like this: [--][----][---]
-    let progressOffset = 0;
-    const compactProgressBar = filteredLanguages
-      .map((language) => {
-        // const progress = (width * lang.percent) / 100;
-        const progress = ((width - 25) * language.percent) / 100;
+    let finalLayout = "";
 
-        const languageColor = languageColors[language.name] || "#858585";
+    let width = 440;
 
-        const output = `
+    // RENDER COMPACT LAYOUT
+    if (layout === "compact") {
+        width = width + 50;
+        height = 90 + Math.round(filteredLanguages.length / 2) * 25;
+
+        // progressOffset holds the previous language's width and used to offset the next language
+        // so that we can stack them one after another, like this: [--][----][---]
+        let progressOffset = 0;
+        const compactProgressBar = filteredLanguages
+            .map((language) => {
+                // const progress = (width * lang.percent) / 100;
+                const progress = ((width - 25) * language.percent) / 100;
+
+                const languageColor =
+                    languageColors[language.name] || "#858585";
+
+                const output = `
           <rect
             mask="url(#rect-mask)"
             data-testid="lang-progress"
@@ -306,104 +310,109 @@ const renderWakatimeCard = (stats = {}, options = { hide: [] }) => {
             fill="${languageColor}"
           />
         `;
-        progressOffset += progress;
-        return output;
-      })
-      .join("");
+                progressOffset += progress;
+                return output;
+            })
+            .join("");
 
-    finalLayout = `
+        finalLayout = `
       <mask id="rect-mask">
       <rect x="25" y="0" width="${width - 50}" height="8" fill="white" rx="5" />
       </mask>
       ${compactProgressBar}
       ${
-        filteredLanguages.length
-          ? createLanguageTextNode({
-              y: 25,
-              langs: filteredLanguages,
-              display_format,
-            }).join("")
-          : noCodingActivityNode({
-              // @ts-ignore
-              color: textColor,
-              text: stats.is_coding_activity_visible
-                ? stats.is_other_usage_visible
-                  ? i18n.t("wakatimecard.nocodingactivity")
-                  : i18n.t("wakatimecard.nocodedetails")
-                : i18n.t("wakatimecard.notpublic"),
-            })
+          filteredLanguages.length ?
+              createLanguageTextNode({
+                  y: 25,
+                  langs: filteredLanguages,
+                  display_format,
+              }).join("")
+          :   noCodingActivityNode({
+                  // @ts-ignore
+                  color: textColor,
+                  text:
+                      stats.is_coding_activity_visible ?
+                          stats.is_other_usage_visible ?
+                              i18n.t("wakatimecard.nocodingactivity")
+                          :   i18n.t("wakatimecard.nocodedetails")
+                      :   i18n.t("wakatimecard.notpublic"),
+              })
       }
     `;
-  } else {
-    finalLayout = flexLayout({
-      items: filteredLanguages.length
-        ? filteredLanguages.map((language, index) => {
-            return createTextNode({
-              id: language.name,
-              label: language.name,
-              value:
-                display_format === "percent"
-                  ? `${language.percent.toFixed(2).toString()} %`
-                  : language.text,
-              index,
-              percent: language.percent,
-              // @ts-ignore
-              progressBarColor: titleColor,
-              // @ts-ignore
-              progressBarBackgroundColor: textColor,
-              hideProgress: hide_progress,
-            });
-          })
-        : [
-            noCodingActivityNode({
-              // @ts-ignore
-              color: textColor,
-              text: stats.is_coding_activity_visible
-                ? stats.is_other_usage_visible
-                  ? i18n.t("wakatimecard.nocodingactivity")
-                  : i18n.t("wakatimecard.nocodedetails")
-                : i18n.t("wakatimecard.notpublic"),
-            }),
-          ],
-      gap: lheight,
-      direction: "column",
-    }).join("");
-  }
+    } else {
+        finalLayout = flexLayout({
+            items:
+                filteredLanguages.length ?
+                    filteredLanguages.map((language, index) => {
+                        return createTextNode({
+                            id: language.name,
+                            label: language.name,
+                            value:
+                                display_format === "percent" ?
+                                    `${language.percent
+                                        .toFixed(2)
+                                        .toString()} %`
+                                :   language.text,
+                            index,
+                            percent: language.percent,
+                            // @ts-ignore
+                            progressBarColor: titleColor,
+                            // @ts-ignore
+                            progressBarBackgroundColor: textColor,
+                            hideProgress: hide_progress,
+                        });
+                    })
+                :   [
+                        noCodingActivityNode({
+                            // @ts-ignore
+                            color: textColor,
+                            text:
+                                stats.is_coding_activity_visible ?
+                                    stats.is_other_usage_visible ?
+                                        i18n.t("wakatimecard.nocodingactivity")
+                                    :   i18n.t("wakatimecard.nocodedetails")
+                                :   i18n.t("wakatimecard.notpublic"),
+                        }),
+                    ],
+            gap: lheight,
+            direction: "column",
+        }).join("");
+    }
 
-  // Get title range text
-  let titleText = i18n.t("wakatimecard.title");
-  switch (stats.range) {
-    case "last_7_days":
-      titleText += ` (${i18n.t("wakatimecard.last7days")})`;
-      break;
-    case "last_year":
-      titleText += ` (${i18n.t("wakatimecard.lastyear")})`;
-      break;
-  }
+    // Get title range text
+    let titleText = i18n.t("wakatimecard.title");
+    switch (stats.range) {
+        case "last_7_days":
+            titleText += ` (${i18n.t("wakatimecard.last7days")})`;
+            break;
+        case "last_year":
+            titleText += ` (${i18n.t("wakatimecard.lastyear")})`;
+            break;
+    }
 
-  const card = new Card({
-    customTitle: custom_title,
-    defaultTitle: titleText,
-    width: 495,
-    height,
-    border_radius,
-    colors: {
-      titleColor,
-      textColor,
-      iconColor,
-      bgColor,
-      borderColor,
-    },
-  });
+    const card = new Card({
+        customTitle: custom_title,
+        defaultTitle: titleText,
+        width: 495,
+        height,
+        border_radius,
+        colors: {
+            titleColor,
+            textColor,
+            iconColor,
+            bgColor,
+            borderColor,
+        },
+    });
 
-  if (disable_animations) {
-    card.disableAnimations();
-  }
+    if (disable_animations) {
+        card.disableAnimations();
+    }
 
-  card.setHideBorder(hide_border);
-  card.setHideTitle(hide_title);
-  card.setCSS(
-    `
+    card.setHideBorder(hide_border);
+    card.setHideTitle(hide_title);
+    card.setCSS(
+        `
     ${cssStyles}
     @keyframes slideInAnimation {
       from {
@@ -429,9 +438,9 @@ const renderWakatimeCard = (stats = {}, options = { hide: [] }) => {
       animation: growWidthAnimation 0.6s ease-in-out forwards;
     }
     `,
-  );
+    );
 
-  return card.render(`
+    return card.render(`
     <svg x="0" y="0" width="100%">
       ${finalLayout}
     </svg>

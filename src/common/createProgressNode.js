@@ -16,17 +16,17 @@ import { clampValue } from "./utils.js";
  * @returns {string} Progress node.
  */
 const createProgressNode = ({
-  x,
-  y,
-  width,
-  color,
-  progress,
-  progressBarBackgroundColor,
-  delay,
+    x,
+    y,
+    width,
+    color,
+    progress,
+    progressBarBackgroundColor,
+    delay,
 }) => {
-  const progressPercentage = clampValue(progress, 2, 100);
+    const progressPercentage = clampValue(progress, 2, 100);
 
-  return `
+    return `
     <svg width="${width}" x="${x}" y="${y}">
       <rect rx="5" ry="5" x="0" y="0" width="${width}" height="8" fill="${progressBarBackgroundColor}"></rect>
       <svg data-testid="lang-progress" width="${progressPercentage}%">

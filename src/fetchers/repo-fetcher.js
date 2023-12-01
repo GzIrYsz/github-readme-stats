@@ -15,9 +15,9 @@ import { MissingParamError, request } from "../common/utils.js";
  * @returns {Promise<AxiosResponse>} The response.
  */
 const fetcher = (variables, token) => {
-  return request(
-    {
-      query: `
+    return request(
+        {
+            query: `
       fragment RepoInfo on Repository {
         name
         nameWithOwner
@@ -48,12 +48,12 @@ const fetcher = (variables, token) => {
         }
       }
     `,
-      variables,
-    },
-    {
-      Authorization: `token ${token}`,
-    },
-  );
+            variables,
+        },
+        {
+            Authorization: `token ${token}`,
+        },
+    );
 };
 
 const urlExample = "/api/pin?username=USERNAME&amp;repo=REPO_NAME";
@@ -70,51 +70,51 @@ const urlExample = "/api/pin?username=USERNAME&amp;repo=REPO_NAME";
  * @returns {Promise<RepositoryData>} Repository data.
  */
 const fetchRepo = async (username, reponame) => {
-  if (!username && !reponame) {
-    throw new MissingParamError(["username", "repo"], urlExample);
-  }
-  if (!username) {
-    throw new MissingParamError(["username"], urlExample);
-  }
-  if (!reponame) {
-    throw new MissingParamError(["repo"], urlExample);
-  }
-
-  let res = await retryer(fetcher, { login: username, repo: reponame });
-
-  const data = res.data.data;
-
-  if (!data.user && !data.organization) {
-    throw new Error("Not found");
-  }
-
-  const isUser = data.organization === null && data.user;
-  const isOrg = data.user === null && data.organization;
-
-  if (isUser) {
-    if (!data.user.repository || data.user.repository.isPrivate) {
-      throw new Error("User Repository Not found");
+    if (!username && !reponame) {
+        throw new MissingParamError(["username", "repo"], urlExample);
     }
-    return {
-      ...data.user.repository,
-      starCount: data.user.repository.stargazers.totalCount,
-    };
-  }
-
-  if (isOrg) {
-    if (
-      !data.organization.repository ||
-      data.organization.repository.isPrivate
-    ) {
-      throw new Error("Organization Repository Not found");
+    if (!username) {
+        throw new MissingParamError(["username"], urlExample);
     }
-    return {
-      ...data.organization.repository,
-      starCount: data.organization.repository.stargazers.totalCount,
-    };
-  }
+    if (!reponame) {
+        throw new MissingParamError(["repo"], urlExample);
+    }
 
-  throw new Error("Unexpected behavior");
+    let res = await retryer(fetcher, { login: username, repo: reponame });
+
+    const data = res.data.data;
+
+    if (!data.user && !data.organization) {
+        throw new Error("Not found");
+    }
+
+    const isUser = data.organization === null && data.user;
+    const isOrg = data.user === null && data.organization;
+
+    if (isUser) {
+        if (!data.user.repository || data.user.repository.isPrivate) {
+            throw new Error("User Repository Not found");
+        }
+        return {
+            ...data.user.repository,
+            starCount: data.user.repository.stargazers.totalCount,
+        };
+    }
+
+    if (isOrg) {
+        if (
+            !data.organization.repository ||
+            data.organization.repository.isPrivate
+        ) {
+            throw new Error("Organization Repository Not found");
+        }
+        return {
+            ...data.organization.repository,
+            starCount: data.organization.repository.stargazers.totalCount,
+        };
+    }
+
+    throw new Error("Unexpected behavior");
 };
 
 export { fetchRepo };

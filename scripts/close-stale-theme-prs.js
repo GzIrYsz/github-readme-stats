@@ -20,7 +20,7 @@ const REVIEWER = "github-actions[bot]";
  * @returns {string} review user.
  */
 const getReviewer = () => {
-  return process.env.REVIEWER ? process.env.REVIEWER : REVIEWER;
+    return process.env.REVIEWER ? process.env.REVIEWER : REVIEWER;
 };
 
 /**
@@ -33,17 +33,17 @@ const getReviewer = () => {
  * @returns {Promise<Object[]>} The open PRs.
  */
 export const fetchOpenPRs = async (octokit, user, repo, reviewer) => {
-  const openPRs = [];
-  let hasNextPage = true;
-  let endCursor;
-  while (hasNextPage) {
-    try {
-      const { repository } = await octokit.graphql(
-        `
+    const openPRs = [];
+    let hasNextPage = true;
+    let endCursor;
+    while (hasNextPage) {
+        try {
+            const { repository } = await octokit.graphql(
+                `
             {
               repository(owner: "${user}", name: "${repo}") {
                 open_prs: pullRequests(${
-                  endCursor ? `after: "${endCursor}", ` : ""
+                    endCursor ? `after: "${endCursor}", ` : ""
                 }
                   first: 100, states: OPEN, orderBy: {field: CREATED_AT, direction: DESC}) {
                   nodes {
@@ -74,18 +74,20 @@ export const fetchOpenPRs = async (octokit, user, repo, reviewer) => {
               }
             }
           `,
-      );
-      openPRs.push(...repository.open_prs.nodes);
-      hasNextPage = repository.open_prs.pageInfo.hasNextPage;
-      endCursor = repository.open_prs.pageInfo.endCursor;
-    } catch (error) {
-      if (error instanceof RequestError) {
-        setFailed(`Could not retrieve top PRs using GraphQl: ${error.message}`);
-      }
-      throw error;
+            );
+            openPRs.push(...repository.open_prs.nodes);
+            hasNextPage = repository.open_prs.pageInfo.hasNextPage;
+            endCursor = repository.open_prs.pageInfo.endCursor;
+        } catch (error) {
+            if (error instanceof RequestError) {
+                setFailed(
+                    `Could not retrieve top PRs using GraphQl: ${error.message}`,
+                );
+            }
+            throw error;
+        }
     }
-  }
-  return openPRs;
+    return openPRs;
 };
 
 /**
@@ -96,9 +98,9 @@ export const fetchOpenPRs = async (octokit, user, repo, reviewer) => {
  * @returns {Object[]} The pull requests that have the given label.
  */
 export const pullsWithLabel = (pulls, label) => {
-  return pulls.filter((pr) => {
-    return pr.labels.nodes.some((lab) => lab.name === label);
-  });
+    return pulls.filter((pr) => {
+        return pr.labels.nodes.some((lab) => lab.name === label);
+    });
 };
 
 /**
@@ -109,20 +111,22 @@ export const pullsWithLabel = (pulls, label) => {
  * @returns {boolean} indicating if PR is stale.
  */
 const isStale = (pullRequest, staleDays) => {
-  const lastCommitDate = new Date(
-    pullRequest.commits.nodes[0].commit.pushedDate,
-  );
-  if (pullRequest.reviews.nodes[0]) {
-    const lastReviewDate = new Date(
-      pullRequest.reviews.nodes.sort((a, b) => (a < b ? 1 : -1))[0].submittedAt,
+    const lastCommitDate = new Date(
+        pullRequest.commits.nodes[0].commit.pushedDate,
     );
-    const lastUpdateDate =
-      lastCommitDate >= lastReviewDate ? lastCommitDate : lastReviewDate;
-    const now = new Date();
-    return (now - lastUpdateDate) / (1000 * 60 * 60 * 24) >= staleDays;
-  } else {
-    return false;
-  }
+    if (pullRequest.reviews.nodes[0]) {
+        const lastReviewDate = new Date(
+            pullRequest.reviews.nodes.sort((a, b) =>
+                a < b ? 1 : -1,
+            )[0].submittedAt,
+        );
+        const lastUpdateDate =
+            lastCommitDate >= lastReviewDate ? lastCommitDate : lastReviewDate;
+        const now = new Date();
+        return (now - lastUpdateDate) / (1000 * 60 * 60 * 24) >= staleDays;
+    } else {
+        return false;
+    }
 };
 
 /**
@@ -131,50 +135,50 @@ const isStale = (pullRequest, staleDays) => {
  * @returns {Promise<void>} A promise.
  */
 const run = async () => {
-  try {
-    // Create octokit client.
-    const dryRun = process.env.DRY_RUN === "true" || false;
-    const staleDays = process.env.STALE_DAYS || 20;
-    debug("Creating octokit client...");
-    const octokit = github.getOctokit(getGithubToken());
-    const { owner, repo } = getRepoInfo(github.context);
-    const reviewer = getReviewer();
+    try {
+        // Create octokit client.
+        const dryRun = process.env.DRY_RUN === "true" || false;
+        const staleDays = process.env.STALE_DAYS || 20;
+        debug("Creating octokit client...");
+        const octokit = github.getOctokit(getGithubToken());
+        const { owner, repo } = getRepoInfo(github.context);
+        const reviewer = getReviewer();
 
-    // Retrieve all theme pull requests.
-    debug("Retrieving all theme pull requests...");
-    const prs = await fetchOpenPRs(octokit, owner, repo, reviewer);
-    const themePRs = pullsWithLabel(prs, "themes");
-    const invalidThemePRs = pullsWithLabel(themePRs, "invalid");
-    debug("Retrieving stale theme PRs...");
-    const staleThemePRs = invalidThemePRs.filter((pr) =>
-      isStale(pr, staleDays),
-    );
-    const staleThemePRsNumbers = staleThemePRs.map((pr) => pr.number);
-    debug(`Found ${staleThemePRs.length} stale theme PRs`);
+        // Retrieve all theme pull requests.
+        debug("Retrieving all theme pull requests...");
+        const prs = await fetchOpenPRs(octokit, owner, repo, reviewer);
+        const themePRs = pullsWithLabel(prs, "themes");
+        const invalidThemePRs = pullsWithLabel(themePRs, "invalid");
+        debug("Retrieving stale theme PRs...");
+        const staleThemePRs = invalidThemePRs.filter((pr) =>
+            isStale(pr, staleDays),
+        );
+        const staleThemePRsNumbers = staleThemePRs.map((pr) => pr.number);
+        debug(`Found ${staleThemePRs.length} stale theme PRs`);
 
-    // Loop through all stale invalid theme pull requests and close them.
-    for (const prNumber of staleThemePRsNumbers) {
-      debug(`Closing #${prNumber} because it is stale...`);
-      if (dryRun) {
-        debug("Dry run enabled, skipping...");
-      } else {
-        await octokit.rest.issues.createComment({
-          owner,
-          repo,
-          issue_number: prNumber,
-          body: CLOSING_COMMENT,
-        });
-        await octokit.rest.pulls.update({
-          owner,
-          repo,
-          pull_number: prNumber,
-          state: "closed",
-        });
-      }
+        // Loop through all stale invalid theme pull requests and close them.
+        for (const prNumber of staleThemePRsNumbers) {
+            debug(`Closing #${prNumber} because it is stale...`);
+            if (dryRun) {
+                debug("Dry run enabled, skipping...");
+            } else {
+                await octokit.rest.issues.createComment({
+                    owner,
+                    repo,
+                    issue_number: prNumber,
+                    body: CLOSING_COMMENT,
+                });
+                await octokit.rest.pulls.update({
+                    owner,
+                    repo,
+                    pull_number: prNumber,
+                    state: "closed",
+                });
+            }
+        }
+    } catch (error) {
+        setFailed(error.message);
     }
-  } catch (error) {
-    setFailed(error.message);
-  }
 };
 
 run();

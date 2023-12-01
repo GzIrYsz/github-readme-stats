@@ -14,17 +14,17 @@ const REPO = "github-readme-stats";
  * @returns {Object} Repository information.
  */
 export const getRepoInfo = (ctx) => {
-  try {
-    return {
-      owner: ctx.repo.owner,
-      repo: ctx.repo.repo,
-    };
-  } catch (error) {
-    return {
-      owner: OWNER,
-      repo: REPO,
-    };
-  }
+    try {
+        return {
+            owner: ctx.repo.owner,
+            repo: ctx.repo.repo,
+        };
+    } catch (error) {
+        return {
+            owner: OWNER,
+            repo: REPO,
+        };
+    }
 };
 
 /**
@@ -33,9 +33,9 @@ export const getRepoInfo = (ctx) => {
  * @returns {string} GitHub token.
  */
 export const getGithubToken = () => {
-  const token = getInput("github_token") || process.env.GITHUB_TOKEN;
-  if (!token) {
-    throw Error("Could not find github token");
-  }
-  return token;
+    const token = getInput("github_token") || process.env.GITHUB_TOKEN;
+    if (!token) {
+        throw Error("Could not find github token");
+    }
+    return token;
 };

@@ -6,37 +6,38 @@ import { themes } from "../../themes/index.js";
 
 const TRY_AGAIN_LATER = "Please try again later";
 
-const SECONDARY_ERROR_MESSAGES = {
-  MAX_RETRY:
-    "You can deploy own instance or wait until public will be no longer limited",
-  NO_TOKENS:
-    "Please add an env variable called PAT_1 with your GitHub API token in vercel",
-  USER_NOT_FOUND: "Make sure the provided username is not an organization",
-  GRAPHQL_ERROR: TRY_AGAIN_LATER,
-  GITHUB_REST_API_ERROR: TRY_AGAIN_LATER,
-  WAKATIME_USER_NOT_FOUND: "Make sure you have a public WakaTime profile",
+export const SECONDARY_ERROR_MESSAGES = {
+    MAX_RETRY:
+        "You can deploy own instance or wait until public will be no longer limited",
+    NO_TOKENS:
+        "Please add an env variable called PAT_1 with your GitHub API token in vercel",
+    USER_NOT_FOUND: "Make sure the provided username is not an organization",
+    GRAPHQL_ERROR: TRY_AGAIN_LATER,
+    GITHUB_REST_API_ERROR: TRY_AGAIN_LATER,
+    WAKATIME_USER_NOT_FOUND: "Make sure you have a public WakaTime profile",
+    USER_NOT_WHITELISTED: "This username is not in the whitelist",
 };
 
 /**
  * Custom error class to handle custom GRS errors.
  */
 class CustomError extends Error {
-  /**
-   * @param {string} message Error message.
-   * @param {string} type Error type.
-   */
-  constructor(message, type) {
-    super(message);
-    this.type = type;
-    this.secondaryMessage = SECONDARY_ERROR_MESSAGES[type] || type;
-  }
+    /**
+     * @param {string} message Error message.
+     * @param {string} type Error type.
+     */
+    constructor(message, type) {
+        super(message);
+        this.type = type;
+        this.secondaryMessage = SECONDARY_ERROR_MESSAGES[type] || type;
+    }
 
-  static MAX_RETRY = "MAX_RETRY";
-  static NO_TOKENS = "NO_TOKENS";
-  static USER_NOT_FOUND = "USER_NOT_FOUND";
-  static GRAPHQL_ERROR = "GRAPHQL_ERROR";
-  static GITHUB_REST_API_ERROR = "GITHUB_REST_API_ERROR";
-  static WAKATIME_ERROR = "WAKATIME_ERROR";
+    static MAX_RETRY = "MAX_RETRY";
+    static NO_TOKENS = "NO_TOKENS";
+    static USER_NOT_FOUND = "USER_NOT_FOUND";
+    static GRAPHQL_ERROR = "GRAPHQL_ERROR";
+    static GITHUB_REST_API_ERROR = "GITHUB_REST_API_ERROR";
+    static WAKATIME_ERROR = "WAKATIME_ERROR";
 }
 
 /**
@@ -51,17 +52,17 @@ class CustomError extends Error {
  * @returns {string[]} Array of items with proper layout.
  */
 const flexLayout = ({ items, gap, direction, sizes = [] }) => {
-  let lastSize = 0;
-  // filter() for filtering out empty strings
-  return items.filter(Boolean).map((item, i) => {
-    const size = sizes[i] || 0;
-    let transform = `translate(${lastSize}, 0)`;
-    if (direction === "column") {
-      transform = `translate(0, ${lastSize})`;
-    }
-    lastSize += size + gap;
-    return `<g transform="${transform}">${item}</g>`;
-  });
+    let lastSize = 0;
+    // filter() for filtering out empty strings
+    return items.filter(Boolean).map((item, i) => {
+        const size = sizes[i] || 0;
+        let transform = `translate(${lastSize}, 0)`;
+        if (direction === "column") {
+            transform = `translate(0, ${lastSize})`;
+        }
+        lastSize += size + gap;
+        return `<g transform="${transform}">${item}</g>`;
+    });
 };
 
 /**
@@ -72,7 +73,7 @@ const flexLayout = ({ items, gap, direction, sizes = [] }) => {
  * @returns {string} Language display SVG object.
  */
 const createLanguageNode = (langName, langColor) => {
-  return `
+    return `
     <g data-testid="primary-lang">
       <circle data-testid="lang-color" cx="0" cy="-5" r="6" fill="${langColor}" />
       <text data-testid="lang-name" class="gray" x="15">${langName}</text>
@@ -90,10 +91,10 @@ const createLanguageNode = (langName, langColor) => {
  * @returns {string} Icon with label SVG object.
  */
 const iconWithLabel = (icon, label, testid, iconSize) => {
-  if (typeof label === "number" && label <= 0) {
-    return "";
-  }
-  const iconSvg = `
+    if (typeof label === "number" && label <= 0) {
+        return "";
+    }
+    const iconSvg = `
       <svg
         class="icon"
         y="-12"
@@ -105,8 +106,8 @@ const iconWithLabel = (icon, label, testid, iconSize) => {
         ${icon}
       </svg>
     `;
-  const text = `<text data-testid="${testid}" class="gray">${label}</text>`;
-  return flexLayout({ items: [iconSvg, text], gap: 20 }).join("");
+    const text = `<text data-testid="${testid}" class="gray">${label}</text>`;
+    return flexLayout({ items: [iconSvg, text], gap: 20 }).join("");
 };
 
 /**
@@ -116,9 +117,9 @@ const iconWithLabel = (icon, label, testid, iconSize) => {
  * @returns {string|number} The formatted number.
  */
 const kFormatter = (num) => {
-  return Math.abs(num) > 999
-    ? Math.sign(num) * parseFloat((Math.abs(num) / 1000).toFixed(1)) + "k"
-    : Math.sign(num) * Math.abs(num);
+    return Math.abs(num) > 999 ?
+            Math.sign(num) * parseFloat((Math.abs(num) / 1000).toFixed(1)) + "k"
+        :   Math.sign(num) * Math.abs(num);
 };
 
 /**
@@ -128,9 +129,9 @@ const kFormatter = (num) => {
  * @returns {boolean} True if the given string is a valid hex color.
  */
 const isValidHexColor = (hexColor) => {
-  return new RegExp(
-    /^([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}|[A-Fa-f0-9]{4})$/,
-  ).test(hexColor);
+    return new RegExp(
+        /^([A-Fa-f0-9]{8}|[A-Fa-f0-9]{6}|[A-Fa-f0-9]{3}|[A-Fa-f0-9]{4})$/,
+    ).test(hexColor);
 };
 
 /**
@@ -140,18 +141,18 @@ const isValidHexColor = (hexColor) => {
  * @returns {boolean | undefined } The parsed value.
  */
 const parseBoolean = (value) => {
-  if (typeof value === "boolean") {
-    return value;
-  }
-
-  if (typeof value === "string") {
-    if (value.toLowerCase() === "true") {
-      return true;
-    } else if (value.toLowerCase() === "false") {
-      return false;
+    if (typeof value === "boolean") {
+        return value;
     }
-  }
-  return undefined;
+
+    if (typeof value === "string") {
+        if (value.toLowerCase() === "true") {
+            return true;
+        } else if (value.toLowerCase() === "false") {
+            return false;
+        }
+    }
+    return undefined;
 };
 
 /**
@@ -161,10 +162,10 @@ const parseBoolean = (value) => {
  * @returns {string[]} The array of strings.
  */
 const parseArray = (str) => {
-  if (!str) {
-    return [];
-  }
-  return str.split(",");
+    if (!str) {
+        return [];
+    }
+    return str.split(",");
 };
 
 /**
@@ -176,11 +177,11 @@ const parseArray = (str) => {
  * @returns {number} The clamped number.
  */
 const clampValue = (number, min, max) => {
-  // @ts-ignore
-  if (Number.isNaN(parseInt(number, 10))) {
-    return min;
-  }
-  return Math.max(min, Math.min(number, max));
+    // @ts-ignore
+    if (Number.isNaN(parseInt(number, 10))) {
+        return min;
+    }
+    return Math.max(min, Math.min(number, max));
 };
 
 /**
@@ -190,10 +191,10 @@ const clampValue = (number, min, max) => {
  * @returns {boolean} True if the given string is a valid gradient.
  */
 const isValidGradient = (colors) => {
-  return (
-    colors.length > 2 &&
-    colors.slice(1).every((color) => isValidHexColor(color))
-  );
+    return (
+        colors.length > 2 &&
+        colors.slice(1).every((color) => isValidHexColor(color))
+    );
 };
 
 /**
@@ -204,17 +205,17 @@ const isValidGradient = (colors) => {
  * @returns {string | string[]} The gradient or color.
  */
 const fallbackColor = (color, fallbackColor) => {
-  let gradient = null;
+    let gradient = null;
 
-  let colors = color ? color.split(",") : [];
-  if (colors.length > 1 && isValidGradient(colors)) {
-    gradient = colors;
-  }
+    let colors = color ? color.split(",") : [];
+    if (colors.length > 1 && isValidGradient(colors)) {
+        gradient = colors;
+    }
 
-  return (
-    (gradient ? gradient : isValidHexColor(color) && `#${color}`) ||
-    fallbackColor
-  );
+    return (
+        (gradient ? gradient : isValidHexColor(color) && `#${color}`) ||
+        fallbackColor
+    );
 };
 
 /**
@@ -230,12 +231,12 @@ const fallbackColor = (color, fallbackColor) => {
  * @returns {Promise<any>} Request response.
  */
 const request = (data, headers) => {
-  return axios({
-    url: "https://api.github.com/graphql",
-    method: "post",
-    headers,
-    data,
-  });
+    return axios({
+        url: "https://api.github.com/graphql",
+        method: "post",
+        headers,
+        data,
+    });
 };
 
 /**
@@ -265,64 +266,71 @@ const request = (data, headers) => {
  * @returns {CardColors} Card colors.
  */
 const getCardColors = ({
-  title_color,
-  text_color,
-  icon_color,
-  bg_color,
-  border_color,
-  ring_color,
-  theme,
-  fallbackTheme = "default",
+    title_color,
+    text_color,
+    icon_color,
+    bg_color,
+    border_color,
+    ring_color,
+    theme,
+    fallbackTheme = "default",
 }) => {
-  const defaultTheme = themes[fallbackTheme];
-  const selectedTheme = themes[theme] || defaultTheme;
-  const defaultBorderColor =
-    selectedTheme.border_color || defaultTheme.border_color;
+    const defaultTheme = themes[fallbackTheme];
+    const selectedTheme = themes[theme] || defaultTheme;
+    const defaultBorderColor =
+        selectedTheme.border_color || defaultTheme.border_color;
 
-  // get the color provided by the user else the theme color
-  // finally if both colors are invalid fallback to default theme
-  const titleColor = fallbackColor(
-    title_color || selectedTheme.title_color,
-    "#" + defaultTheme.title_color,
-  );
-
-  // get the color provided by the user else the theme color
-  // finally if both colors are invalid we use the titleColor
-  const ringColor = fallbackColor(
-    ring_color || selectedTheme.ring_color,
-    titleColor,
-  );
-  const iconColor = fallbackColor(
-    icon_color || selectedTheme.icon_color,
-    "#" + defaultTheme.icon_color,
-  );
-  const textColor = fallbackColor(
-    text_color || selectedTheme.text_color,
-    "#" + defaultTheme.text_color,
-  );
-  const bgColor = fallbackColor(
-    bg_color || selectedTheme.bg_color,
-    "#" + defaultTheme.bg_color,
-  );
-
-  const borderColor = fallbackColor(
-    border_color || defaultBorderColor,
-    "#" + defaultBorderColor,
-  );
-
-  if (
-    typeof titleColor !== "string" ||
-    typeof textColor !== "string" ||
-    typeof ringColor !== "string" ||
-    typeof iconColor !== "string" ||
-    typeof borderColor !== "string"
-  ) {
-    throw new Error(
-      "Unexpected behavior, all colors except background should be string.",
+    // get the color provided by the user else the theme color
+    // finally if both colors are invalid fallback to default theme
+    const titleColor = fallbackColor(
+        title_color || selectedTheme.title_color,
+        "#" + defaultTheme.title_color,
     );
-  }
 
-  return { titleColor, iconColor, textColor, bgColor, borderColor, ringColor };
+    // get the color provided by the user else the theme color
+    // finally if both colors are invalid we use the titleColor
+    const ringColor = fallbackColor(
+        ring_color || selectedTheme.ring_color,
+        titleColor,
+    );
+    const iconColor = fallbackColor(
+        icon_color || selectedTheme.icon_color,
+        "#" + defaultTheme.icon_color,
+    );
+    const textColor = fallbackColor(
+        text_color || selectedTheme.text_color,
+        "#" + defaultTheme.text_color,
+    );
+    const bgColor = fallbackColor(
+        bg_color || selectedTheme.bg_color,
+        "#" + defaultTheme.bg_color,
+    );
+
+    const borderColor = fallbackColor(
+        border_color || defaultBorderColor,
+        "#" + defaultBorderColor,
+    );
+
+    if (
+        typeof titleColor !== "string" ||
+        typeof textColor !== "string" ||
+        typeof ringColor !== "string" ||
+        typeof iconColor !== "string" ||
+        typeof borderColor !== "string"
+    ) {
+        throw new Error(
+            "Unexpected behavior, all colors except background should be string.",
+        );
+    }
+
+    return {
+        titleColor,
+        iconColor,
+        textColor,
+        bgColor,
+        borderColor,
+        ringColor,
+    };
 };
 
 // Script parameters.
@@ -337,16 +345,16 @@ const ERROR_CARD_LENGTH = 576.5;
  * @returns {string} Encoded string.
  */
 const encodeHTML = (str) => {
-  return str
-    .replace(/[\u00A0-\u9999<>&](?!#)/gim, (i) => {
-      return "&#" + i.charCodeAt(0) + ";";
-    })
-    .replace(/\u0008/gim, "");
+    return str
+        .replace(/[\u00A0-\u9999<>&](?!#)/gim, (i) => {
+            return "&#" + i.charCodeAt(0) + ";";
+        })
+        .replace(/\u0008/gim, "");
 };
 
 const UPSTREAM_API_ERRORS = [
-  TRY_AGAIN_LATER,
-  SECONDARY_ERROR_MESSAGES.MAX_RETRY,
+    TRY_AGAIN_LATER,
+    SECONDARY_ERROR_MESSAGES.MAX_RETRY,
 ];
 
 /**
@@ -358,26 +366,26 @@ const UPSTREAM_API_ERRORS = [
  * @returns {string} The SVG markup.
  */
 const renderError = (message, secondaryMessage = "", options = {}) => {
-  const {
-    title_color,
-    text_color,
-    bg_color,
-    border_color,
-    theme = "default",
-  } = options;
+    const {
+        title_color,
+        text_color,
+        bg_color,
+        border_color,
+        theme = "default",
+    } = options;
 
-  // returns theme based colors with proper overrides and defaults
-  const { titleColor, textColor, bgColor, borderColor } = getCardColors({
-    title_color,
-    text_color,
-    icon_color: "",
-    bg_color,
-    border_color,
-    ring_color: "",
-    theme,
-  });
+    // returns theme based colors with proper overrides and defaults
+    const { titleColor, textColor, bgColor, borderColor } = getCardColors({
+        title_color,
+        text_color,
+        icon_color: "",
+        bg_color,
+        border_color,
+        ring_color: "",
+        theme,
+    });
 
-  return `
+    return `
     <svg width="${ERROR_CARD_LENGTH}"  height="120" viewBox="0 0 ${ERROR_CARD_LENGTH} 120" fill="${bgColor}" xmlns="http://www.w3.org/2000/svg">
     <style>
     .text { font: 600 16px 'Segoe UI', Ubuntu, Sans-Serif; fill: ${titleColor} }
@@ -385,13 +393,9 @@ const renderError = (message, secondaryMessage = "", options = {}) => {
     .gray { fill: #858585 }
     </style>
     <rect x="0.5" y="0.5" width="${
-      ERROR_CARD_LENGTH - 1
+        ERROR_CARD_LENGTH - 1
     }" height="99%" rx="4.5" fill="${bgColor}" stroke="${borderColor}"/>
-    <text x="25" y="45" class="text">Something went wrong!${
-      UPSTREAM_API_ERRORS.includes(secondaryMessage)
-        ? ""
-        : " file an issue at https://tiny.one/readme-stats"
-    }</text>
+    <text x="25" y="45" class="text">Something went wrong!</text>
     <text data-testid="message" x="25" y="55" class="text small">
       <tspan x="25" dy="18">${encodeHTML(message)}</tspan>
       <tspan x="25" dy="18" class="gray">${secondaryMessage}</tspan>
@@ -409,36 +413,36 @@ const renderError = (message, secondaryMessage = "", options = {}) => {
  * @returns {string[]} Array of lines.
  */
 const wrapTextMultiline = (text, width = 59, maxLines = 3) => {
-  const fullWidthComma = "，";
-  const encoded = encodeHTML(text);
-  const isChinese = encoded.includes(fullWidthComma);
+    const fullWidthComma = "，";
+    const encoded = encodeHTML(text);
+    const isChinese = encoded.includes(fullWidthComma);
 
-  let wrapped = [];
+    let wrapped = [];
 
-  if (isChinese) {
-    wrapped = encoded.split(fullWidthComma); // Chinese full punctuation
-  } else {
-    wrapped = wrap(encoded, {
-      width,
-    }).split("\n"); // Split wrapped lines to get an array of lines
-  }
+    if (isChinese) {
+        wrapped = encoded.split(fullWidthComma); // Chinese full punctuation
+    } else {
+        wrapped = wrap(encoded, {
+            width,
+        }).split("\n"); // Split wrapped lines to get an array of lines
+    }
 
-  const lines = wrapped.map((line) => line.trim()).slice(0, maxLines); // Only consider maxLines lines
+    const lines = wrapped.map((line) => line.trim()).slice(0, maxLines); // Only consider maxLines lines
 
-  // Add "..." to the last line if the text exceeds maxLines
-  if (wrapped.length > maxLines) {
-    lines[maxLines - 1] += "...";
-  }
+    // Add "..." to the last line if the text exceeds maxLines
+    if (wrapped.length > maxLines) {
+        lines[maxLines - 1] += "...";
+    }
 
-  // Remove empty lines if text fits in less than maxLines lines
-  const multiLineText = lines.filter(Boolean);
-  return multiLineText;
+    // Remove empty lines if text fits in less than maxLines lines
+    const multiLineText = lines.filter(Boolean);
+    return multiLineText;
 };
 
 const noop = () => {};
 // return console instance based on the environment
 const logger =
-  process.env.NODE_ENV === "test" ? { log: noop, error: noop } : console;
+    process.env.NODE_ENV === "test" ? { log: noop, error: noop } : console;
 
 const ONE_MINUTE = 60;
 const FIVE_MINUTES = 300;
@@ -452,38 +456,38 @@ const EIGHT_HOURS = 28800;
 const ONE_DAY = 86400;
 
 const CONSTANTS = {
-  ONE_MINUTE,
-  FIVE_MINUTES,
-  TEN_MINUTES,
-  FIFTEEN_MINUTES,
-  THIRTY_MINUTES,
-  TWO_HOURS,
-  FOUR_HOURS,
-  SIX_HOURS,
-  EIGHT_HOURS,
-  ONE_DAY,
-  CARD_CACHE_SECONDS: SIX_HOURS,
-  ERROR_CACHE_SECONDS: TEN_MINUTES,
+    ONE_MINUTE,
+    FIVE_MINUTES,
+    TEN_MINUTES,
+    FIFTEEN_MINUTES,
+    THIRTY_MINUTES,
+    TWO_HOURS,
+    FOUR_HOURS,
+    SIX_HOURS,
+    EIGHT_HOURS,
+    ONE_DAY,
+    CARD_CACHE_SECONDS: SIX_HOURS,
+    ERROR_CACHE_SECONDS: TEN_MINUTES,
 };
 
 /**
  * Missing query parameter class.
  */
 class MissingParamError extends Error {
-  /**
-   * Missing query parameter error constructor.
-   *
-   * @param {string[]} missedParams An array of missing parameters names.
-   * @param {string=} secondaryMessage Optional secondary message to display.
-   */
-  constructor(missedParams, secondaryMessage) {
-    const msg = `Missing params ${missedParams
-      .map((p) => `"${p}"`)
-      .join(", ")} make sure you pass the parameters in URL`;
-    super(msg);
-    this.missedParams = missedParams;
-    this.secondaryMessage = secondaryMessage;
-  }
+    /**
+     * Missing query parameter error constructor.
+     *
+     * @param {string[]} missedParams An array of missing parameters names.
+     * @param {string=} secondaryMessage Optional secondary message to display.
+     */
+    constructor(missedParams, secondaryMessage) {
+        const msg = `Missing params ${missedParams
+            .map((p) => `"${p}"`)
+            .join(", ")} make sure you pass the parameters in URL`;
+        super(msg);
+        this.missedParams = missedParams;
+        this.secondaryMessage = secondaryMessage;
+    }
 }
 
 /**
@@ -495,8 +499,8 @@ class MissingParamError extends Error {
  * @returns {number} Text length.
  */
 const measureText = (str, fontSize = 10) => {
-  // prettier-ignore
-  const widths = [
+    // prettier-ignore
+    const widths = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0.2796875, 0.2765625,
@@ -517,15 +521,15 @@ const measureText = (str, fontSize = 10) => {
     0.5, 0.721875, 0.5, 0.5, 0.5, 0.3546875, 0.259375, 0.353125, 0.5890625,
   ];
 
-  const avg = 0.5279276315789471;
-  return (
-    str
-      .split("")
-      .map((c) =>
-        c.charCodeAt(0) < widths.length ? widths[c.charCodeAt(0)] : avg,
-      )
-      .reduce((cur, acc) => acc + cur) * fontSize
-  );
+    const avg = 0.5279276315789471;
+    return (
+        str
+            .split("")
+            .map((c) =>
+                c.charCodeAt(0) < widths.length ? widths[c.charCodeAt(0)] : avg,
+            )
+            .reduce((cur, acc) => acc + cur) * fontSize
+    );
 };
 
 /**
@@ -545,19 +549,19 @@ const lowercaseTrim = (name) => name.toLowerCase().trim();
  * @returns {Array<T>} Array of languages split in two columns.
  */
 const chunkArray = (arr, perChunk) => {
-  return arr.reduce((resultArray, item, index) => {
-    const chunkIndex = Math.floor(index / perChunk);
+    return arr.reduce((resultArray, item, index) => {
+        const chunkIndex = Math.floor(index / perChunk);
 
-    if (!resultArray[chunkIndex]) {
-      // @ts-ignore
-      resultArray[chunkIndex] = []; // start a new chunk
-    }
+        if (!resultArray[chunkIndex]) {
+            // @ts-ignore
+            resultArray[chunkIndex] = []; // start a new chunk
+        }
 
-    // @ts-ignore
-    resultArray[chunkIndex].push(item);
+        // @ts-ignore
+        resultArray[chunkIndex].push(item);
 
-    return resultArray;
-  }, []);
+        return resultArray;
+    }, []);
 };
 
 /**
@@ -567,12 +571,12 @@ const chunkArray = (arr, perChunk) => {
  * @returns {string} String with emoji parsed.
  */
 const parseEmojis = (str) => {
-  if (!str) {
-    throw new Error("[parseEmoji]: str argument not provided");
-  }
-  return str.replace(/:\w+:/gm, (emoji) => {
-    return toEmoji.get(emoji) || "";
-  });
+    if (!str) {
+        throw new Error("[parseEmoji]: str argument not provided");
+    }
+    return str.replace(/:\w+:/gm, (emoji) => {
+        return toEmoji.get(emoji) || "";
+    });
 };
 
 /**
@@ -583,36 +587,36 @@ const parseEmojis = (str) => {
  * @returns {number} Number of minutes between the two dates.
  */
 const dateDiff = (d1, d2) => {
-  const date1 = new Date(d1);
-  const date2 = new Date(d2);
-  const diff = date1.getTime() - date2.getTime();
-  return Math.round(diff / (1000 * 60));
+    const date1 = new Date(d1);
+    const date2 = new Date(d2);
+    const diff = date1.getTime() - date2.getTime();
+    return Math.round(diff / (1000 * 60));
 };
 
 export {
-  ERROR_CARD_LENGTH,
-  renderError,
-  createLanguageNode,
-  iconWithLabel,
-  encodeHTML,
-  kFormatter,
-  isValidHexColor,
-  parseBoolean,
-  parseArray,
-  clampValue,
-  isValidGradient,
-  fallbackColor,
-  request,
-  flexLayout,
-  getCardColors,
-  wrapTextMultiline,
-  logger,
-  CONSTANTS,
-  CustomError,
-  MissingParamError,
-  measureText,
-  lowercaseTrim,
-  chunkArray,
-  parseEmojis,
-  dateDiff,
+    ERROR_CARD_LENGTH,
+    renderError,
+    createLanguageNode,
+    iconWithLabel,
+    encodeHTML,
+    kFormatter,
+    isValidHexColor,
+    parseBoolean,
+    parseArray,
+    clampValue,
+    isValidGradient,
+    fallbackColor,
+    request,
+    flexLayout,
+    getCardColors,
+    wrapTextMultiline,
+    logger,
+    CONSTANTS,
+    CustomError,
+    MissingParamError,
+    measureText,
+    lowercaseTrim,
+    chunkArray,
+    parseEmojis,
+    dateDiff,
 };

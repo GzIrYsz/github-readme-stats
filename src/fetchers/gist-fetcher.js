@@ -40,10 +40,10 @@ query gistInfo($gistName: String!) {
  * @returns {Promise<AxiosResponse>} The response.
  */
 const fetcher = async (variables, token) => {
-  return await request(
-    { query: QUERY, variables },
-    { Authorization: `token ${token}` },
-  );
+    return await request(
+        { query: QUERY, variables },
+        { Authorization: `token ${token}` },
+    );
 };
 
 /**
@@ -57,23 +57,23 @@ const fetcher = async (variables, token) => {
  * @returns {string} Primary language.
  */
 const calculatePrimaryLanguage = (files) => {
-  const languages = {};
-  for (const file of files) {
-    if (file.language) {
-      if (languages[file.language.name]) {
-        languages[file.language.name] += file.size;
-      } else {
-        languages[file.language.name] = file.size;
-      }
+    const languages = {};
+    for (const file of files) {
+        if (file.language) {
+            if (languages[file.language.name]) {
+                languages[file.language.name] += file.size;
+            } else {
+                languages[file.language.name] = file.size;
+            }
+        }
     }
-  }
-  let primaryLanguage = Object.keys(languages)[0];
-  for (const language in languages) {
-    if (languages[language] > languages[primaryLanguage]) {
-      primaryLanguage = language;
+    let primaryLanguage = Object.keys(languages)[0];
+    for (const language in languages) {
+        if (languages[language] > languages[primaryLanguage]) {
+            primaryLanguage = language;
+        }
     }
-  }
-  return primaryLanguage;
+    return primaryLanguage;
 };
 
 /**
@@ -87,27 +87,27 @@ const calculatePrimaryLanguage = (files) => {
  * @returns {Promise<GistData>} Gist data.
  */
 const fetchGist = async (id) => {
-  if (!id) {
-    throw new MissingParamError(["id"], "/api/gist?id=GIST_ID");
-  }
-  const res = await retryer(fetcher, { gistName: id });
-  if (res.data.errors) {
-    throw new Error(res.data.errors[0].message);
-  }
-  if (!res.data.data.viewer.gist) {
-    throw new Error("Gist not found");
-  }
-  const data = res.data.data.viewer.gist;
-  return {
-    name: data.files[Object.keys(data.files)[0]].name,
-    nameWithOwner: `${data.owner.login}/${
-      data.files[Object.keys(data.files)[0]].name
-    }`,
-    description: data.description,
-    language: calculatePrimaryLanguage(data.files),
-    starsCount: data.stargazerCount,
-    forksCount: data.forks.totalCount,
-  };
+    if (!id) {
+        throw new MissingParamError(["id"], "/api/gist?id=GIST_ID");
+    }
+    const res = await retryer(fetcher, { gistName: id });
+    if (res.data.errors) {
+        throw new Error(res.data.errors[0].message);
+    }
+    if (!res.data.data.viewer.gist) {
+        throw new Error("Gist not found");
+    }
+    const data = res.data.data.viewer.gist;
+    return {
+        name: data.files[Object.keys(data.files)[0]].name,
+        nameWithOwner: `${data.owner.login}/${
+            data.files[Object.keys(data.files)[0]].name
+        }`,
+        description: data.description,
+        language: calculatePrimaryLanguage(data.files),
+        starsCount: data.stargazerCount,
+        forksCount: data.forks.totalCount,
+    };
 };
 
 export { fetchGist };
