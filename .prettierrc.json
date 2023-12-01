@@ -2,5 +2,8 @@
   "trailingComma": "all",
   "useTabs": false,
   "endOfLine": "auto",
-  "proseWrap": "always"
+  "proseWrap": "always",
+  "tabWidth": 4,
+  "semi": true,
+  "experimentalTernaries": true
 }
