@@ -4,7 +4,9 @@ const getAllUsernames = () => {
     );
 };
 
-const whitelist = getAllUsernames();
+const whitelist = getAllUsernames().map(
+    (usernameVar) => process.env[usernameVar],
+);
 
 export { whitelist };
 export default whitelist;
